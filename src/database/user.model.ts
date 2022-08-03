@@ -1,5 +1,6 @@
+import { compare, hash } from 'bcrypt';
 import { Connection, Document, Model, Schema, SchemaTypes } from 'mongoose';
-import { Observable } from 'rxjs';
+import { from, Observable } from 'rxjs';
 
 interface User extends Document {
   comparePassword(password: string): Observable<boolean>;
@@ -16,7 +17,22 @@ const UserSchema = new Schema<User>({
   email: SchemaTypes.String,
 });
 
+async function preSaveHook(next) {
+  if (!this.isModified('password')) return next();
+  const password = await hash(this.password, 12);
+  this.set('password', password);
+  next();
+}
+
+UserSchema.pre<User>('save', preSaveHook);
+
+function comparePasswordMethod(password: string): Observable<boolean> {
+  return from(compare(password, this.password));
+}
+
+UserSchema.methods.comparePassword = comparePasswordMethod;
+
 const createUserModel: (conn: Connection) => UserModel = (conn: Connection) =>
   conn.model<User>('User', UserSchema, 'users');
 
-export { User, UserModel, createUserModel };
+export { User, UserModel, createUserModel, comparePasswordMethod };
