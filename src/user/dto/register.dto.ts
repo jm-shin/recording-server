@@ -2,6 +2,9 @@ import { IsEmail, IsNotEmpty, MaxLength, MinLength } from 'class-validator';
 
 export class RegisterDto {
   @IsNotEmpty()
+  readonly id: string;
+
+  @IsNotEmpty()
   readonly username: string;
 
   @IsNotEmpty()
@@ -10,6 +13,8 @@ export class RegisterDto {
 
   @IsNotEmpty()
   @MinLength(8, { message: 'The min length of password is 8' })
-  @MaxLength(20, { message: `The password can't accept more than 20 characters` })
+  @MaxLength(20, {
+    message: `The password can't accept more than 20 characters`,
+  })
   readonly password: string;
 }

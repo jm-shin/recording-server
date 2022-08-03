@@ -13,11 +13,11 @@ export class RegisterController {
     @Body() registerDto: RegisterDto,
     @Res() res: Response,
   ): Observable<Response> {
-    const username = registerDto.username;
-    return this.userService.existsByUsername(username).pipe(
+    const id = registerDto.id;
+    return this.userService.existsById(id).pipe(
       mergeMap((exists) => {
         if (exists) {
-          throw new ConflictException(`username: ${username} is existed`);
+          throw new ConflictException(`id: ${id} is existed`);
         } else {
           const email = registerDto.email;
           return this.userService.existsByEmail(email).pipe(

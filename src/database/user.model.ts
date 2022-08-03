@@ -12,8 +12,9 @@ interface User extends Document {
 type UserModel = Model<User>;
 
 const UserSchema = new Schema<User>({
-  username: SchemaTypes.String,
+  id: SchemaTypes.String,
   password: SchemaTypes.String,
+  username: SchemaTypes.String,
   email: SchemaTypes.String,
 });
 

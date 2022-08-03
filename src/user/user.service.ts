@@ -7,15 +7,14 @@ import { throwIfEmpty } from 'rxjs/operators';
 
 @Injectable()
 export class UserService {
-  constructor(@Inject(USER_MODEL) private userModel: UserModel) {
-  }
+  constructor(@Inject(USER_MODEL) private userModel: UserModel) {}
 
   findByUsername(username: string): Observable<User> {
     return from(this.userModel.findOne({ username }).exec());
   }
 
-  existsByUsername(username: string): Observable<boolean> {
-    return from(this.userModel.exists({ username }).exec()).pipe(
+  existsById(id: string): Observable<boolean> {
+    return from(this.userModel.exists({ id }).exec()).pipe(
       map((exists) => exists != null),
     );
   }
@@ -36,7 +35,25 @@ export class UserService {
   findById(id: string): Observable<User> {
     const userQuery = this.userModel.findOne({ _id: id });
     return from(userQuery.exec()).pipe(
-      mergeMap((p) => (p ? of(p) : EMPTY)),
+      mergeMap((user) => (user ? of(user) : EMPTY)),
+      throwIfEmpty(() => new NotFoundException(`user: ${id} was not found`)),
+    );
+  }
+
+  deleteById(id: string): Observable<any> {
+    return from(this.userModel.deleteOne({ id: id })).pipe(
+      mergeMap((user) => (user ? of(user) : EMPTY)),
+      throwIfEmpty(() => new NotFoundException(`user: ${id} was not found`)),
+    );
+  }
+
+  update(id: string, data): Observable<User> {
+    return from(
+      this.userModel
+        .findOneAndUpdate({ id: id }, { ...data }, { new: true })
+        .exec(),
+    ).pipe(
+      mergeMap((user) => (user ? of(user) : EMPTY)),
       throwIfEmpty(() => new NotFoundException(`user: ${id} was not found`)),
     );
   }

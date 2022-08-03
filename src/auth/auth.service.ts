@@ -14,20 +14,20 @@ export class AuthService {
     private jwtService: JwtService,
   ) {}
 
-  validateUser(username: string, pass: string): Observable<UserPrincipal> {
-    return this.userService.findByUsername(username).pipe(
+  validateUser(id: string, pass: string): Observable<UserPrincipal> {
+    return this.userService.findByUsername(id).pipe(
       mergeMap((p) => (p ? of(p) : EMPTY)),
 
       throwIfEmpty(
-        () => new UnauthorizedException(`username or password is not matched`),
+        () => new UnauthorizedException(`id or password is not matched`),
       ),
 
       mergeMap((user) => {
-        const { _id, password, username, email } = user;
+        const { id, password, username, email } = user;
         return user.comparePassword(pass).pipe(
           map((m) => {
             if (m) {
-              return { id: _id, username, email } as UserPrincipal;
+              return { id, username, email } as UserPrincipal;
             } else {
               throw new UnauthorizedException(
                 'username or password is not matched',

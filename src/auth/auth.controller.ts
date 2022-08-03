@@ -15,7 +15,6 @@ export class AuthController {
     @Req() req: AuthenticatedRequest,
     @Res() res: Response,
   ): Observable<Response> {
-    console.log(req.user);
     return this.authService.login(req.user).pipe(
       map((token) => {
         return res
