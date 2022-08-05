@@ -1,13 +1,19 @@
 import { Inject, Injectable, NotFoundException } from '@nestjs/common';
-import { USER_MODEL } from '../database/database.constants';
+import { USER_MODEL, USER_REPOSITORY } from '../database/database.constants';
 import { EMPTY, from, map, mergeMap, Observable, of } from 'rxjs';
 import { User, UserModel } from '../database/user.model';
 import { RegisterDto } from './dto/register.dto';
 import { throwIfEmpty } from 'rxjs/operators';
+import { Repository } from 'typeorm';
+import { UserEntity } from '../database/user/user.entity';
 
 @Injectable()
 export class UserService {
-  constructor(@Inject(USER_MODEL) private userModel: UserModel) {}
+  constructor(
+    @Inject(USER_MODEL) private userModel: UserModel,
+    @Inject(USER_REPOSITORY) private userRepository: Repository<UserEntity>,
+  ) {
+  }
 
   findByUsername(username: string): Observable<User> {
     return from(this.userModel.findOne({ username }).exec());
@@ -56,5 +62,11 @@ export class UserService {
       mergeMap((user) => (user ? of(user) : EMPTY)),
       throwIfEmpty(() => new NotFoundException(`user: ${id} was not found`)),
     );
+  }
+
+  //mysql
+  registerUSer(data: RegisterDto) {
+    const registerUser = UserEntity.create(data);
+    return this.userRepository.save(registerUser);
   }
 }

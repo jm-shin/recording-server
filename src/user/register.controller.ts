@@ -8,6 +8,7 @@ import { RegisterDto } from './dto/register.dto';
 export class RegisterController {
   constructor(private userService: UserService) {}
 
+  //mongodb version
   @Post()
   register(
     @Body() registerDto: RegisterDto,
@@ -39,5 +40,11 @@ export class RegisterController {
         }
       }),
     );
+  }
+
+  //mysql version
+  @Post('user')
+  registerUser(@Body() registerDto: RegisterDto) {
+    return this.userService.registerUSer(registerDto);
   }
 }

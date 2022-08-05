@@ -1,8 +1,5 @@
 import { Connection } from 'mongoose';
-import {
-  DATABASE_CONNECTION,
-  USER_MODEL,
-} from './database.constants';
+import { DATABASE_CONNECTION, USER_MODEL } from './database.constants';
 
 import { createUserModel } from './user.model';
 
