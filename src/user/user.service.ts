@@ -12,8 +12,7 @@ export class UserService {
   constructor(
     @Inject(USER_MODEL) private userModel: UserModel,
     @Inject(USER_REPOSITORY) private userRepository: Repository<UserEntity>,
-  ) {
-  }
+  ) {}
 
   findByUsername(username: string): Observable<User> {
     return from(this.userModel.findOne({ username }).exec());
@@ -65,8 +64,8 @@ export class UserService {
   }
 
   //mysql
-  registerUSer(data: RegisterDto) {
-    const registerUser = UserEntity.create(data);
+  async registerUser(data: RegisterDto) {
+    const registerUser = await UserEntity.create(data);
     return this.userRepository.save(registerUser);
   }
 }

@@ -7,7 +7,8 @@ import { LocalAuthGuard } from './guard/local-auth.guard';
 
 @Controller('auth')
 export class AuthController {
-  constructor(private authService: AuthService) {}
+  constructor(private authService: AuthService) {
+  }
 
   @UseGuards(LocalAuthGuard)
   @Post('login')
@@ -23,5 +24,11 @@ export class AuthController {
           .send();
       }),
     );
+  }
+
+  @UseGuards(LocalAuthGuard)
+  @Post('login-user')
+  loginUser() {
+    return
   }
 }

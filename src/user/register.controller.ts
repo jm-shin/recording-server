@@ -45,6 +45,6 @@ export class RegisterController {
   //mysql version
   @Post('user')
   registerUser(@Body() registerDto: RegisterDto) {
-    return this.userService.registerUSer(registerDto);
+    return this.userService.registerUser(registerDto);
   }
 }

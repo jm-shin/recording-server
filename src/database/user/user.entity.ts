@@ -1,7 +1,8 @@
 import { Entity, Column, PrimaryGeneratedColumn, PrimaryColumn } from 'typeorm';
 import { RegisterDto } from '../../user/dto/register.dto';
+import { hash } from 'bcrypt';
 
-@Entity()
+@Entity('user')
 export class UserEntity {
   @PrimaryGeneratedColumn()
   idx: number;
@@ -18,10 +19,10 @@ export class UserEntity {
   @Column()
   email: string;
 
-  static create(data: RegisterDto) {
+  static async create(data: RegisterDto) {
     const user = new UserEntity();
     user.id = data.id;
-    user.password = data.password;
+    user.password = await hash(data.password, 12);
     user.username = data.username;
     user.email = data.email;
     return user;
